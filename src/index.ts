@@ -4,7 +4,7 @@ import loggerMiddleware from "./middlewares/loggerMiddleware";
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(loggerMiddleware)
+app.use(loggerMiddleware);
 app.use(json());
 
 app.listen(port, () => console.log("server is running on port " + port));
