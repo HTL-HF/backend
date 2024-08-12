@@ -19,19 +19,19 @@ const errorMiddleware = async (
     logger.error(
       `${request.method} ${request.url} resulted in ${StatusCodes.INTERNAL_SERVER_ERROR} with message ${error.message}`
     );
-    console.log(error.stack);
 
     await response
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .send(error.message);
+    next(error);
   } else {
     logger.error(
       `${request.method} ${request.url} resulted in ${StatusCodes.INTERNAL_SERVER_ERROR} with unknown message`
     );
 
     await response.status(StatusCodes.INTERNAL_SERVER_ERROR).send("UNKNOWN");
+    next(error);
   }
-  next(error);
 };
 
 export default errorMiddleware;
