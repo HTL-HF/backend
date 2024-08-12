@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import logger from "../utils/logger";
-import BaseError from "../errors/baseError";
+import BaseError from "../errors/BaseError";
 import { StatusCodes } from "http-status-codes";
 
 const errorMiddleware = async (
