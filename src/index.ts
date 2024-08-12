@@ -3,6 +3,7 @@ import errorMiddleware from "./middlewares/errorMiddleware";
 import expressWinston from "express-winston";
 import { transports } from "../configs/logger";
 import winston from "winston";
+import ConflictError from "./errors/ConflictError";
 const app = express();
 const port = process.env.PORT || 3000;
 
