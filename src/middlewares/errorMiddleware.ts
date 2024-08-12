@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import logger from "../utils/logger";
+import logger from "../../configs/logger";
 import BaseError from "../errors/BaseError";
 import { StatusCodes } from "http-status-codes";
 
