@@ -26,7 +26,7 @@ const errorMiddleware = async (
       .send(error.message);
   } else {
     logger.error(
-      `${request.method} ${request.url} resulted in ${StatusCodes.INTERNAL_SERVER_ERROR} with message`
+      `${request.method} ${request.url} resulted in ${StatusCodes.INTERNAL_SERVER_ERROR} with unknown message`
     );
 
     await response.status(StatusCodes.INTERNAL_SERVER_ERROR).send("UNKNOWN");
