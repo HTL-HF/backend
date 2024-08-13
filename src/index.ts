@@ -4,7 +4,7 @@ import expressWinston from "express-winston";
 import { transports } from "../configs/logger";
 import winston from "winston";
 import connect from "../configs/mongoConnection";
-
+import { CreateUserDto } from "./types/dtos/users.dto";
 const app = express();
 const port = process.env.PORT || 3000;
 app.use(

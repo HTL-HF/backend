@@ -1,7 +1,7 @@
-import { UserLoginDTO } from "../dtos/users.dto";
-import Users, { IUser } from "../schemas/user.schema";
+import { CreateUserDto, UserLoginDTO } from "../types/dtos/users.dto";
+import Users from "../schemas/user.schema";
 
-export const createUser = async (user: IUser) => {
+export const createUser = async (user: CreateUserDto) => {
   return await Users.create(user);
 };
 
