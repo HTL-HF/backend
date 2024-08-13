@@ -6,7 +6,15 @@ interface IQuestion extends Document {
   required: boolean;
   options?: (number | string)[];
   type: "NUMBER" | "STRING";
-  viewType: "SHORT" | "LONG" | "CHECKBOX" | "RADIO" | "DROPDOWN" | "LINEAR";
+  viewType:
+    | "SHORT"
+    | "LONG"
+    | "CHECKBOX"
+    | "RADIO"
+    | "DROPDOWN"
+    | "LINEAR"
+    | "DATE"
+    | "TIME";
 }
 
 interface IForm extends Document {
@@ -23,7 +31,16 @@ const QuestionSchema = new Schema<IQuestion>({
   type: { type: String, enum: ["NUMBER", "STRING"], required: true },
   viewType: {
     type: String,
-    enum: ["SHORT", "LONG", "CHECKBOX", "RADIO", "DROPDOWN", "LINEAR"],
+    enum: [
+      "SHORT",
+      "LONG",
+      "CHECKBOX",
+      "RADIO",
+      "DROPDOWN",
+      "LINEAR",
+      "DATE",
+      "TIME",
+    ],
     required: true,
   },
   options: {
