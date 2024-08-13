@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-interface IQuestion extends Document {
+interface IQuestion {
   title: string;
   description?: string;
   required: boolean;
@@ -17,7 +17,7 @@ interface IQuestion extends Document {
     | "TIME";
 }
 
-interface IForm extends Document {
+interface IForm {
   title: string;
   description?: string;
   userId: mongoose.Types.ObjectId;

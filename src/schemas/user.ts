@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-interface IUser extends Document {
+interface IUser {
   firstName: string;
   lastName: string;
   username: string;
