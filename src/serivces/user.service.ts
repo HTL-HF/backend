@@ -4,33 +4,35 @@ import {
   createUser,
   findByUsernameAndPassword,
 } from "../repositories/users.repository";
-import { UserLoginDTO } from "../types/dtos/users.dto";
+import { CreateUserDto, UserDTO, UserLoginDTO } from "../types/dtos/users.dto";
 import { UserModel } from "../types/interfaces/users.interface";
 import { createCookie, createToken } from "../utils/jwt.utils";
 import { MongoError } from "mongodb";
 
-export const register = async (user: Omit<UserModel, "_id">) => {
+export const register = async (user: CreateUserDto) => {
   try {
     const createdUser: UserModel = await createUser(user);
 
     const tokenData = createToken(createdUser);
-    
-    return createCookie(tokenData);
+
+    return { cookie: createCookie(tokenData), id: createdUser._id };
   } catch (err) {
     if ((err as MongoError).code === 11000) {
       throw new ConflictError("Email or Username already taken");
     }
+    
+    throw err;
   }
 };
 
 export const login = async (user: UserLoginDTO) => {
-  const createdUser = await findByUsernameAndPassword(user);
+  const loggedUser = await findByUsernameAndPassword(user);
 
-  if (!user) {
+  if (!loggedUser) {
     throw new NotFoundError("User does not exist or password does not match");
   }
 
-  const tokenData = createToken(createdUser as UserModel);
+  const tokenData = createToken(loggedUser as UserModel);
 
-  return createCookie(tokenData);
+  return { cookie: createCookie(tokenData), id: (loggedUser as UserModel)._id };
 };
