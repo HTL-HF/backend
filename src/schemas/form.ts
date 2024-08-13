@@ -12,7 +12,7 @@ interface IQuestion extends Document {
 interface IForm extends Document {
   title: string;
   description?: string;
-  user_id: mongoose.Types.ObjectId;
+  userId: mongoose.Types.ObjectId;
   questions: IQuestion[];
 }
 
@@ -34,7 +34,7 @@ const QuestionSchema = new Schema<IQuestion>({
 const FormSchema = new Schema<IForm>({
   title: { type: String, required: true },
   description: { type: String },
-  user_id: {
+  userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
