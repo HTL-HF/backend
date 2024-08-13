@@ -1,4 +1,4 @@
-import mongoose, { Model, Mongoose, Schema } from "mongoose";
+import mongoose, {  Schema } from "mongoose";
 import { UserModel } from "../types/interfaces/users.interface";
 
 

@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { CreateUserDto, UserLoginDTO } from "../types/dtos/users.dto";
-import { login, register } from "../serivces/user.service";
+import { login, register } from "../services/user.service";
 import { StatusCodes } from "http-status-codes";
 
 export const registerHandler = async (
@@ -10,6 +10,7 @@ export const registerHandler = async (
 ) => {
   try {
     const userData: CreateUserDto = request.body;
+
     const { cookie, id } = await register(userData);
 
     response.setHeader("Set-Cookie", cookie);
@@ -29,7 +30,7 @@ export const loginHandler = async (
     const { cookie, id } = await login(userData);
 
     response.setHeader("Set-Cookie", cookie);
-    response.status(StatusCodes.CREATED).json({ id });
+    response.status(StatusCodes.OK).json({ id });
   } catch (err) {
     next(err);
   }

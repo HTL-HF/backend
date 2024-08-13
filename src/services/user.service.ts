@@ -4,7 +4,7 @@ import {
   createUser,
   findByUsernameAndPassword,
 } from "../repositories/users.repository";
-import { CreateUserDto, UserDTO, UserLoginDTO } from "../types/dtos/users.dto";
+import { CreateUserDto, UserLoginDTO } from "../types/dtos/users.dto";
 import { UserModel } from "../types/interfaces/users.interface";
 import { createCookie, createToken } from "../utils/jwt.utils";
 import { MongoError } from "mongodb";
@@ -20,7 +20,7 @@ export const register = async (user: CreateUserDto) => {
     if ((err as MongoError).code === 11000) {
       throw new ConflictError("Email or Username already taken");
     }
-    
+
     throw err;
   }
 };
