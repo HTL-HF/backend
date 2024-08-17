@@ -12,8 +12,7 @@ export const registerHandler = async (
     const userData: CreateUserDto = request.body;
 
     const { cookie, id } = await register(userData);
-
-    response.setHeader("Set-Cookie", cookie);
+    response.cookie("token", cookie, { httpOnly: true });
     response.status(StatusCodes.CREATED).json({ id });
   } catch (err) {
     next(err);
@@ -29,7 +28,7 @@ export const loginHandler = async (
     const userData: UserLoginDTO = request.body;
     const { cookie, id } = await login(userData);
 
-    response.setHeader("Set-Cookie", cookie);
+    response.cookie("token", cookie, { httpOnly: true, maxAge:60*60*1000 });
     response.status(StatusCodes.OK).json({ id });
   } catch (err) {
     next(err);

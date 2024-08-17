@@ -6,7 +6,7 @@ import {
 } from "../repositories/users.repository";
 import { CreateUserDto, UserLoginDTO } from "../types/dtos/users.dto";
 import { UserModel } from "../types/interfaces/users.interface";
-import { createCookie, createToken } from "../utils/jwt.utils";
+import {  createToken } from "../utils/jwt.utils";
 import { MongoError } from "mongodb";
 
 export const register = async (user: CreateUserDto) => {
@@ -15,7 +15,7 @@ export const register = async (user: CreateUserDto) => {
 
     const tokenData = createToken(createdUser);
 
-    return { cookie: createCookie(tokenData), id: createdUser._id };
+    return { cookie: tokenData, id: createdUser._id };
   } catch (err) {
     if ((err as MongoError).code === 11000) {
       throw new ConflictError("Email or Username already taken");
@@ -34,5 +34,5 @@ export const login = async (user: UserLoginDTO) => {
 
   const tokenData = createToken(loggedUser as UserModel);
 
-  return { cookie: createCookie(tokenData), id: (loggedUser as UserModel)._id };
+  return { cookie: tokenData, id: (loggedUser as UserModel)._id };
 };

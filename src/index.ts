@@ -5,8 +5,18 @@ import { transports } from "../configs/logger";
 import winston from "winston";
 import connect from "../configs/mongoConnection";
 import usersRouter from "./routes/users.routes";
+import cors from "cors";
+
 const app = express();
-const port = process.env.PORT || 3000;
+
+const PORT = process.env.PORT || 3000;
+const FRONTEND_URL = `http://${process.env.FRONTEND_IP || "localhost"}:${process.env.FRONTEND_PORT || 5173}`
+
+app.use(cors({
+  origin: FRONTEND_URL,
+  credentials: true
+}));
+
 app.use(
   expressWinston.logger({
     transports,
@@ -19,8 +29,8 @@ app.use(
 
 app.use(json());
 
-app.use("/users",usersRouter);
+app.use("/users", usersRouter);
 app.use(errorMiddleware);
 
 connect(() => console.log("connected to DB"));
-app.listen(port, () => console.log("server is running on port " + port));
+app.listen(PORT, () => console.log("server is running on port " + PORT));
