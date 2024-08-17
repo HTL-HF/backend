@@ -1,7 +1,6 @@
 import { UserDTO } from "../types/dtos/users.dto";
 import { sign } from "jsonwebtoken";
 import { UserModel } from "../types/interfaces/users.interface";
-import { TokenData } from "../types/interfaces/auth.interface";
 
 export const createToken = (user: UserModel) => {
   const dataStoredInToken: UserDTO = {
