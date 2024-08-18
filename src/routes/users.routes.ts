@@ -1,9 +1,14 @@
 import { Router } from "express";
-import { loginHandler, registerHandler } from "../controllers/users.controller";
+import {
+  getUserFormsHandler,
+  loginHandler,
+  registerHandler,
+} from "../controllers/users.controller";
+import verifyTokenMiddleware from "../middlewares/verifyTokenMiddleware";
 
 const usersRouter = Router();
 
-usersRouter.post("/register",registerHandler);
-usersRouter.post("/login",loginHandler);
-
-export default usersRouter
+usersRouter.post("/register", registerHandler);
+usersRouter.post("/login", loginHandler);
+usersRouter.get("/forms", verifyTokenMiddleware).use(getUserFormsHandler);
+export default usersRouter;
