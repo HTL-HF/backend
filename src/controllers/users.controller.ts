@@ -11,9 +11,9 @@ export const registerHandler = async (
   try {
     const userData: CreateUserDto = request.body;
 
-    const { cookie } = await register(userData);
+    const { cookie, id } = await register(userData);
     response.cookie("token", cookie, { maxAge: 60 * 60 * 1000 });
-    response.status(StatusCodes.CREATED).send("successfully registered");
+    response.status(StatusCodes.CREATED).json({ id });
   } catch (err) {
     next(err);
   }
@@ -26,10 +26,10 @@ export const loginHandler = async (
 ) => {
   try {
     const userData: UserLoginDTO = request.body;
-    const { cookie } = await login(userData);
+    const { cookie, id } = await login(userData);
 
     response.cookie("token", cookie, { maxAge: 60 * 60 * 1000 });
-    response.status(StatusCodes.OK).send("successfully logged in");
+    response.status(StatusCodes.OK).json({ id });
   } catch (err) {
     next(err);
   }
