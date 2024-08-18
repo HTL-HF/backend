@@ -1,4 +1,4 @@
-import Forms from "../schemas/form.schema";
+import Forms from "../schemas/forms.schema";
 import { RequestForm } from "../types/dtos/forms.dto";
 
 export const findUserForms = async (userId: string) => {
