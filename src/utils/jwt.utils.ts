@@ -1,6 +1,8 @@
 import { UserDTO } from "../types/dtos/users.dto";
-import { sign } from "jsonwebtoken";
+import { decode, sign, verify } from "jsonwebtoken";
 import { UserModel } from "../types/interfaces/users.interface";
+
+const SECRET_KEY: string = process.env.JWT_SECRET_KEY || "very secret key";
 
 export const createToken = (user: UserModel) => {
   const dataStoredInToken: UserDTO = {
@@ -9,13 +11,18 @@ export const createToken = (user: UserModel) => {
     firstName: user.firstName,
     lastName: user.lastName,
   };
-  const secretKey: string = process.env.JWT_SECRET_KEY || "very secret key";
   const expiresIn = 60 * 60;
 
   return {
     expiresIn,
-    token: sign(dataStoredInToken, secretKey, { expiresIn }),
+    token: sign(dataStoredInToken, SECRET_KEY, { expiresIn }),
   };
 };
 
+export const getUserFromToken = (token: string): UserDTO => {
+  return decode(token) as UserDTO;
+};
 
+export const verifyToken = (token: string) => {
+  verify(token, SECRET_KEY, { ignoreExpiration: false });
+};
