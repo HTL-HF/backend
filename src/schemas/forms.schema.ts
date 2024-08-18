@@ -22,11 +22,12 @@ const QuestionsSchema = new Schema({
     required: true,
   },
   options: {
-    type: [Schema.Types.Mixed],
+    type: [Schema.Types.Mixed], required:false
   },
 });
 
 const FormsSchema = new Schema({
+  filename:{type:String,required:true},
   title: { type: String, required: true },
   description: { type: String },
   userId: {
