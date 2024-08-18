@@ -12,19 +12,23 @@ import { getUserFromToken } from "../utils/jwt.utils";
 
 export const getUserForms = async (token: string) => {
   const user = getUserFromToken(token);
-  const forms: FormModel[] = await findUserForms(user.id);
+  const forms = await findUserForms(user.id);
   if (!forms) {
     return [];
   }
 
-  return forms;
+  return forms.map((formDoc) => {
+    const form = formDoc.toObject();
+    const { _id, userId, ...rest } = form;
+    return { ...rest, id: _id.toString() };
+  });
 };
 
 export const deleteForm = async (formId: string, token: string) => {
   const user = await getUserFromToken(token);
   const form = await getFormById(formId);
   if (form) {
-    if (form._id !== user.id) {
+    if (form.userId.toString() !== user.id) {
       throw new ForbiddenError("your not authorized to delete this form");
     }
   } else {
