@@ -1,0 +1,29 @@
+import { Request, Response, NextFunction } from "express";
+import { addForm, deleteForm } from "../services/forms.service";
+import { StatusCodes } from "http-status-codes";
+
+export const deleteFormHandler = async (
+  request: Request,
+  response: Response,
+  next: NextFunction
+) => {
+  try {
+    await deleteForm(request.params.id, request.cookies["token"].token);
+    response.status(StatusCodes.OK).send("Successfully deleted form");
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const addFormHandler = async (
+  request: Request,
+  response: Response,
+  next: NextFunction
+) => {
+  try {
+    const form = await addForm(request.body, request.cookies["token"].token);
+    response.status(StatusCodes.CREATED).json(form);
+  } catch (err) {
+    next(err);
+  }
+};
