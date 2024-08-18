@@ -43,6 +43,7 @@ export const getUserFormsHandler = async (
 ) => {
   try {
     const forms = await getUserForms(request.cookies["token"].token);
+    
     response.status(StatusCodes.OK).json(forms);
   } catch (err) {
     next(err);
