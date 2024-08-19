@@ -45,10 +45,7 @@ export const addForm = async (
 ): Promise<ResponseForm> => {
   const user = getUserFromToken(token);
 
-  const createdForm: FormModel = await createForm({ ...form, userId: user.id });
-  return {
-    ...createdForm,
-    userId: createdForm.userId.toString(),
-    id: createdForm._id,
-  };
+  const createdForm = await createForm({ ...form, userId: user.id });
+  
+  return createdForm.toObject();
 };
