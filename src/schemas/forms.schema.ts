@@ -27,7 +27,6 @@ const QuestionsSchema = new Schema({
 });
 
 const FormsSchema = new Schema({
-  filename:{type:String,required:true},
   title: { type: String, required: true },
   description: { type: String },
   userId: {

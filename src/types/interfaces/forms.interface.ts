@@ -18,7 +18,6 @@ export interface QuestionModel {
 }
 
 export interface FormModel {
-  filename: string;
   _id: string;
   title: string;
   description?: string;
