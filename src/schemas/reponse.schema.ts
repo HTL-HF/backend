@@ -17,7 +17,7 @@ const ResponseSchema = new Schema({
   answers: [AnswerSchema],
 });
 
-export const Response = mongoose.model<ResponseModel & Document>(
+export const Responses = mongoose.model<ResponseModel & Document>(
   "Response",
   ResponseSchema
 );
