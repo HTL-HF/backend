@@ -1,7 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 import { FormModel } from "../types/interfaces/forms.interface";
 
-
 const QuestionsSchema = new Schema({
   title: { type: String, required: true },
   description: { type: String },
@@ -22,7 +21,8 @@ const QuestionsSchema = new Schema({
     required: true,
   },
   options: {
-    type: [Schema.Types.Mixed], required:false
+    type: [Schema.Types.Mixed],
+    required: false,
   },
 });
 

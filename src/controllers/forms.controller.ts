@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { addForm, deleteForm } from "../services/forms.service";
+import { addForm, deleteForm, getFormById } from "../services/forms.service";
 import { StatusCodes } from "http-status-codes";
 
 export const deleteFormHandler = async (
@@ -23,6 +23,19 @@ export const addFormHandler = async (
   try {
     const form = await addForm(request.body, request.cookies["token"].token);
     response.status(StatusCodes.CREATED).json(form);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getFormByIdHandler = async (
+  request: Request,
+  response: Response,
+  next: NextFunction
+) => {
+  try {
+    const form = await getFormById(request.params.id);
+    response.status(StatusCodes.OK).json(form);
   } catch (err) {
     next(err);
   }

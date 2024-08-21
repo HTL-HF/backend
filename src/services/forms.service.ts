@@ -4,9 +4,12 @@ import {
   createForm,
   deleteFormById,
   findUserForms,
-  getFormById,
+  findFormById,
 } from "../repositories/forms.repository";
-import { RequestForm, ResponseForm } from "../types/dtos/forms.dto";
+import {
+  RequestForm,
+  ResponseForm,
+} from "../types/dtos/forms.dto";
 import { getUserFromToken } from "../utils/jwt.utils";
 
 export const getUserForms = async (token: string) => {
@@ -45,6 +48,24 @@ export const addForm = async (
   const user = getUserFromToken(token);
 
   const createdForm = await createForm({ ...form, userId: user.id });
-  
+
   return createdForm.toObject();
+};
+
+export const getFormById = async (formId: string) => {
+  const form = await findFormById(formId);
+
+  if (!form) {
+    throw new NotFoundError(`Form with id: ${formId} not found`);
+  }
+
+  const formObject = form.toObject();
+
+  return {
+    ...formObject,
+    id: formObject._id,
+    questions: formObject.questions.map((question) => {
+      return { ...question, id: question._id };
+    }),
+  };
 };

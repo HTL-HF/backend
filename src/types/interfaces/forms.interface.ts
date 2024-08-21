@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 export interface QuestionModel {
+  _id:string
   title: string;
   description?: string;
   required: boolean;
