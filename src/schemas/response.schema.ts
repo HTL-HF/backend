@@ -10,7 +10,7 @@ const AnswerSchema = new Schema({
   answer: { type: Schema.Types.Mixed, required: true },
 });
 
-const ResponseSchema = new Schema({
+export const ResponseSchema = new Schema({
   formId: { type: mongoose.Schema.Types.ObjectId, ref: "Form", required: true },
   userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   submittedAt: { type: Date, required: true, default: Date.now },

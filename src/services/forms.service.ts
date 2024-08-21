@@ -6,10 +6,7 @@ import {
   findUserForms,
   findFormById,
 } from "../repositories/forms.repository";
-import {
-  RequestForm,
-  ResponseForm,
-} from "../types/dtos/forms.dto";
+import { RequestForm, ResponseForm } from "../types/dtos/forms.dto";
 import { getUserFromToken } from "../utils/jwt.utils";
 
 export const getUserForms = async (token: string) => {
@@ -24,6 +21,14 @@ export const getUserForms = async (token: string) => {
     const { _id, userId, ...rest } = form;
     return { ...rest, id: _id.toString() };
   });
+};
+
+export const isOwner = async (formId: string, userId: string) => {
+  const form = await getFormById(formId);
+
+  if (form.userId.toString() !== userId) {
+    throw new ForbiddenError(`${userId} doesnt have access for ${formId}`);
+  }
 };
 
 export const deleteForm = async (formId: string, token: string) => {
