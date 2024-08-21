@@ -1,7 +1,7 @@
 import { Responses } from "../schemas/reponse.schema";
 import { ResponseDTO } from "../types/dtos/responses.dto";
 
-export const findResponses = async (formId: string) => {
+export const findFormResponsesById = async (formId: string) => {
   return await Responses.find({ formId });
 };
 
