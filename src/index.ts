@@ -1,4 +1,4 @@
-import express, { json, NextFunction, Request, Response } from "express";
+import express, { json } from "express";
 import errorMiddleware from "./middlewares/errorMiddleware";
 import expressWinston from "express-winston";
 import { transports } from "../configs/logger";

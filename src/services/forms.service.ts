@@ -7,7 +7,6 @@ import {
   getFormById,
 } from "../repositories/forms.repository";
 import { RequestForm, ResponseForm } from "../types/dtos/forms.dto";
-import { FormModel } from "../types/interfaces/forms.interface";
 import { getUserFromToken } from "../utils/jwt.utils";
 
 export const getUserForms = async (token: string) => {
