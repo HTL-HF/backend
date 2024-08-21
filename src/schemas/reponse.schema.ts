@@ -1,18 +1,7 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Document, Schema } from "mongoose";
+import { ResponseModel } from "../types/interfaces/responses.interface";
 
-interface IAnswer {
-  questionId: mongoose.Types.ObjectId;
-  answer: string | number;
-}
-
-interface IResponse {
-  formId: mongoose.Types.ObjectId;
-  userId: mongoose.Types.ObjectId;
-  submitted_at: Date;
-  answers: IAnswer[];
-}
-
-const AnswerSchema = new Schema<IAnswer>({
+const AnswerSchema = new Schema({
   questionId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Question",
@@ -21,11 +10,14 @@ const AnswerSchema = new Schema<IAnswer>({
   answer: { type: Schema.Types.Mixed, required: true },
 });
 
-const ResponseSchema = new Schema<IResponse>({
+const ResponseSchema = new Schema({
   formId: { type: mongoose.Schema.Types.ObjectId, ref: "Form", required: true },
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-  submitted_at: { type: Date, required: true, default: Date.now },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  submittedAt: { type: Date, required: true, default: Date.now },
   answers: [AnswerSchema],
 });
 
-export const Response = mongoose.model<IResponse>("Response", ResponseSchema);
+export const Response = mongoose.model<ResponseModel & Document>(
+  "Response",
+  ResponseSchema
+);
