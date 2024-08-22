@@ -1,4 +1,5 @@
 import ForbiddenError from "../errors/ForbiddenError";
+import NotAcceptableError from "../errors/NotAcceptableError";
 import NotFoundError from "../errors/NotFoundError";
 import {
   createForm,
@@ -7,6 +8,7 @@ import {
   findFormById,
 } from "../repositories/forms.repository";
 import { RequestForm, ResponseForm } from "../types/dtos/forms.dto";
+import { inArray } from "../utils/array.utils";
 import { getUserFromToken } from "../utils/jwt.utils";
 
 export const getUserForms = async (token: string) => {
@@ -52,6 +54,17 @@ export const addForm = async (
 ): Promise<ResponseForm> => {
   const user = getUserFromToken(token);
 
+  for (const question of form.questions) {
+    if (
+      question.options &&
+      !inArray(["DROPDOWN", "CHECKBOX", "RADIO", "LINEAR"], question.viewType)
+    ) {
+      throw new NotAcceptableError(
+        "Cant have options for non optional view type"
+      );
+    }
+  }
+
   const createdForm = await createForm({ ...form, userId: user.id });
 
   return createdForm.toObject();
@@ -70,7 +83,7 @@ export const getFormById = async (formId: string) => {
     ...formObject,
     id: formObject._id,
     questions: formObject.questions.map((question) => {
-      return { ...question, id: question._id };
+      return { ...question, id: question._id.toString() };
     }),
   };
 };
