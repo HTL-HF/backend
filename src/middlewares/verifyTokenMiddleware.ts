@@ -12,20 +12,15 @@ const verifyTokenMiddleware = async (
     if (request.cookies && request.cookies["token"]) {
       const token = request.cookies["token"].token;
 
-      try {
-        verifyToken(token);
-      } catch (err) {
-        throw new UnauthorizedError("Invalid JWT token");
-      }
+      verifyToken(token);
     } else {
       throw new UnauthorizedError("You must include an authentication token");
     }
 
     next();
   } catch (err) {
-    
     next(err);
   }
 };
 
-export default verifyTokenMiddleware
+export default verifyTokenMiddleware;
