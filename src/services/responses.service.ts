@@ -128,32 +128,21 @@ const assertTypes = (question: ResponseQuestion, answer: AnswerDTO) => {
 };
 
 const assertOptions = (question: ResponseQuestion, answer: AnswerDTO) => {
-  if (question.options) {
-    if (question.viewType === "CHECKBOX") {
-      if (Array.isArray(answer.answer)) {
-        if (
-          !answer.answer.every(
-            (ans) => question.options && question.options.includes(ans)
-          )
-        ) {
-          throw new NotAcceptableError(
-            `Your answer is not part of the available options of question ${question.id}`
-          );
-        }
-      } else {
-        throw new NotAcceptableError(
-          `Your answer has to be an array for question ${question.id}`
-        );
-      }
-    } else {
-      if (
-        Array.isArray(answer.answer) ||
-        !question.options.includes(answer.answer)
-      ) {
-        throw new NotAcceptableError(
-          `Your answer is not part of the available options of question ${question.id}`
-        );
-      }
+  if (!question.options) return;
+
+  const { viewType } = question;
+  const { answer: ans } = answer;
+
+  if (viewType === "CHECKBOX") {
+    if (!Array.isArray(ans) || !ans.every((item) => question.options!.includes(item))) {
+      throw new NotAcceptableError(
+        `Your answer must be an array and part of the available options for question ${question.id}`
+      );
     }
+  } else if (Array.isArray(ans) || !question.options.includes(ans)) {
+    throw new NotAcceptableError(
+      `Your answer must be a single value and part of the available options for question ${question.id}`
+    );
   }
 };
+
