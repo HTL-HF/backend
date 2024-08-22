@@ -112,7 +112,7 @@ const assertTypes = (question: ResponseQuestion, answer: AnswerDTO) => {
     question.type !== typeof answer.answer &&
     !(
       Array.isArray(answer.answer) &&
-      answer.answer.map((answer) => typeof answer === typeof question.type)
+      answer.answer.every((answer) => typeof answer === typeof question.type)
     )
   ) {
     throw new NotAcceptableError(
@@ -129,28 +129,31 @@ const assertTypes = (question: ResponseQuestion, answer: AnswerDTO) => {
 
 const assertOptions = (question: ResponseQuestion, answer: AnswerDTO) => {
   if (question.options) {
-    if (
-      question.viewType === "CHECKBOX" &&
-      Array.isArray(answer.answer) &&
-      !answer.answer.every(
-        (ans) => question.options && question.options.includes(ans)
-      )
-    ) {
-      throw new NotAcceptableError(
-        `Your answer is not part of the available options of question ${question.id}`
-      );
-    }
-
-    if (
-      question.viewType !== "CHECKBOX" &&
-      (Array.isArray(answer.answer) ||
-        !question.options.includes(answer.answer))
-    ) {
-      throw new NotAcceptableError(
-        `Your answer is not part of the available options of question ${question.id}`
-      );
+    if (question.viewType === "CHECKBOX") {
+      if (Array.isArray(answer.answer)) {
+        if (
+          !answer.answer.every(
+            (ans) => question.options && question.options.includes(ans)
+          )
+        ) {
+          throw new NotAcceptableError(
+            `Your answer is not part of the available options of question ${question.id}`
+          );
+        }
+      } else {
+        throw new NotAcceptableError(
+          `Your answer has to be an array for question ${question.id}`
+        );
+      }
+    } else {
+      if (
+        Array.isArray(answer.answer) ||
+        !question.options.includes(answer.answer)
+      ) {
+        throw new NotAcceptableError(
+          `Your answer is not part of the available options of question ${question.id}`
+        );
+      }
     }
   }
 };
-
-
