@@ -128,19 +128,31 @@ const assertTypes = (question: ResponseQuestion, answer: AnswerDTO) => {
 };
 
 const assertOptions = (question: ResponseQuestion, answer: AnswerDTO) => {
-  if (
-    question.options &&
-    !(
+  if (question.options) {
+    // If the viewType is CHECKBOX, the answer must be an array and each answer must be in the options
+    if (
       question.viewType === "CHECKBOX" &&
       Array.isArray(answer.answer) &&
-      answer.answer.every(
-        (answer) => question.options && inArray(question.options, answer)
+      !answer.answer.every(
+        (ans) => question.options && question.options.includes(ans)
       )
-    ) &&
-    !inArray(question.options, answer.answer)
-  ) {
-    throw new NotAcceptableError(
-      `your answer is not part of the available options of question ${question.id}`
-    );
+    ) {
+      throw new NotAcceptableError(
+        `Your answer is not part of the available options of question ${question.id}`
+      );
+    }
+
+    // If the viewType is not CHECKBOX, the answer must not be an array and must be in the options
+    if (
+      question.viewType !== "CHECKBOX" &&
+      (Array.isArray(answer.answer) ||
+        !question.options.includes(answer.answer))
+    ) {
+      throw new NotAcceptableError(
+        `Your answer is not part of the available options of question ${question.id}`
+      );
+    }
   }
 };
+
+
