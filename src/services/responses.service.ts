@@ -7,7 +7,7 @@ import {
   findResponseById,
 } from "../repositories/responses.repository";
 import { ResponseDTO } from "../types/dtos/responses.dto";
-import { getUserFromToken } from "../utils/jwt.utils";
+import { getUserFromToken, verifyToken } from "../utils/jwt.utils";
 import { getFormById, isOwner } from "./forms.service";
 
 export const getFormResponsesById = async (
@@ -42,19 +42,21 @@ export const getFormResponsesById = async (
   return responses;
 };
 
-export const saveResponse = async(
-  response: Omit<ResponseDTO, "id"|"formId">,
-  formId:string,
-  token?: string,
-): Promise<any> =>{
+export const saveResponse  = async (
+  response: Omit<ResponseDTO, "id" | "formId">,
+  formId: string,
+  token?: string
+): Promise<string> => {
   if (token) {
     const userId = getUserFromToken(token).id;
-    return await saveResponse({ ...response, userId },formId);
+
+    return await saveResponse({ ...response, userId }, formId);
   } else {
-    console.log({...response,formId})
-    return (await createResponse({...response,formId})).toObject()._id;
+    await getFormById(formId);
+
+    return (await createResponse({ ...response, formId })).toObject()._id;
   }
-}
+};
 
 export const getResponseById = async (responseId: string) => {
   const response = await findResponseById(responseId);
