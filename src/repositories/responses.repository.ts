@@ -9,10 +9,10 @@ export const deleteResponse = async (id: string) => {
   return await Responses.findByIdAndDelete(id);
 };
 
-export const createResponse = async (response: ResponseDTO) => {
+export const createResponse = async (response: Omit<ResponseDTO, "id">) => {
   return await Responses.create(response);
 };
 
-export const findResponseById = async (responseId:string) => {
-    return await Responses.findById(responseId);
-}
+export const findResponseById = async (responseId: string) => {
+  return await Responses.findById(responseId);
+};

@@ -42,9 +42,19 @@ export const getFormResponsesById = async (
   return responses;
 };
 
-export const saveResponse = async (response: ResponseDTO) => {
-  return (await createResponse(response)).toObject()._id;
-};
+export const saveResponse = async(
+  response: Omit<ResponseDTO, "id"|"formId">,
+  formId:string,
+  token?: string,
+): Promise<any> =>{
+  if (token) {
+    const userId = getUserFromToken(token).id;
+    return await saveResponse({ ...response, userId },formId);
+  } else {
+    console.log({...response,formId})
+    return (await createResponse({...response,formId})).toObject()._id;
+  }
+}
 
 export const getResponseById = async (responseId: string) => {
   const response = await findResponseById(responseId);
@@ -61,7 +71,7 @@ export const removeResponse = async (responseId: string, token: string) => {
 
   const userId = getUserFromToken(token).id;
 
-  await isOwner(response.formId.toString(),userId)
+  await isOwner(response.formId.toString(), userId);
 
   await deleteResponse(responseId);
 

@@ -5,6 +5,7 @@ import {
   saveResponse,
 } from "../services/responses.service";
 import { StatusCodes } from "http-status-codes";
+import { verifyToken } from "../utils/jwt.utils";
 
 export const getResponsesHandler = async (
   request: Request,
@@ -28,9 +29,23 @@ export const saveResponseHandler = async (
   next: NextFunction
 ) => {
   try {
-    const id = await saveResponse(request.body);
+    const formId = request.params.formId;
+    let createdResponseId;
+    const tokenCookie = request.cookies["token"];
 
-    response.status(StatusCodes.OK).json({ id });
+    if (tokenCookie) {
+      verifyToken(tokenCookie.token);
+      
+      createdResponseId = await saveResponse(
+        request.body,
+        request.params.formId,
+        tokenCookie.token
+      );
+    } else {
+      createdResponseId = await saveResponse(request.body, formId);
+    }
+
+    response.status(StatusCodes.CREATED).json({ id: createdResponseId });
   } catch (err) {
     next(err);
   }
