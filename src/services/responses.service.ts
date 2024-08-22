@@ -129,7 +129,6 @@ const assertTypes = (question: ResponseQuestion, answer: AnswerDTO) => {
 
 const assertOptions = (question: ResponseQuestion, answer: AnswerDTO) => {
   if (question.options) {
-    // If the viewType is CHECKBOX, the answer must be an array and each answer must be in the options
     if (
       question.viewType === "CHECKBOX" &&
       Array.isArray(answer.answer) &&
@@ -142,7 +141,6 @@ const assertOptions = (question: ResponseQuestion, answer: AnswerDTO) => {
       );
     }
 
-    // If the viewType is not CHECKBOX, the answer must not be an array and must be in the options
     if (
       question.viewType !== "CHECKBOX" &&
       (Array.isArray(answer.answer) ||
