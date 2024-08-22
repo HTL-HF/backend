@@ -3,8 +3,7 @@ import mongoose from "mongoose";
 export interface AnswerModel {
   _id: string;
   questionId: mongoose.Types.ObjectId;
-  answer: string | number;
-
+  answer: string | number | string[];
 }
 
 export interface ResponseModel {

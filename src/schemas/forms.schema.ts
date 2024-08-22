@@ -5,7 +5,7 @@ const QuestionsSchema = new Schema({
   title: { type: String, required: true },
   description: { type: String },
   required: { type: Boolean, required: true },
-  type: { type: String, enum: ["NUMBER", "STRING"], required: true },
+  type: { type: String, enum: ["number", "string"], required: true },
   viewType: {
     type: String,
     enum: [
@@ -23,6 +23,7 @@ const QuestionsSchema = new Schema({
   options: {
     type: [Schema.Types.Mixed],
     required: false,
+    default: undefined,
   },
 });
 

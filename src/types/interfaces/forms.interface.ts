@@ -6,7 +6,7 @@ export interface QuestionModel {
   description?: string;
   required: boolean;
   options?: (number | string)[];
-  type: "NUMBER" | "STRING";
+  type: "number" | "string";
   viewType:
     | "SHORT"
     | "LONG"
