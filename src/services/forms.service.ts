@@ -8,7 +8,6 @@ import {
   findFormById,
 } from "../repositories/forms.repository";
 import { RequestForm, ResponseForm } from "../types/dtos/forms.dto";
-import { inArray } from "../utils/array.utils";
 import { getUserFromToken } from "../utils/jwt.utils";
 
 export const getUserForms = async (token: string) => {
@@ -54,16 +53,7 @@ export const addForm = async (
 ): Promise<ResponseForm> => {
   const user = getUserFromToken(token);
 
-  for (const question of form.questions) {
-    if (
-      inArray(["DROPDOWN", "CHECKBOX", "RADIO", "LINEAR"], question.viewType) &&
-      Array.isArray(question.options )
-    ) {
-      throw new NotAcceptableError(
-        "Cant have options for non optional view type"
-      );
-    }
-  }
+  validateForm(form);
 
   const createdForm = await createForm({ ...form, userId: user.id });
 
@@ -86,4 +76,38 @@ export const getFormById = async (formId: string) => {
       return { ...question, id: question._id.toString() };
     }),
   };
+};
+
+const validateForm = (form: RequestForm) => {
+  for (const question of form.questions) {
+    const { options, viewType, type } = question;
+
+    const optionsRequiredViewTypes = [
+      "DROPDOWN",
+      "CHECKBOX",
+      "RADIO",
+      "LINEAR",
+    ];
+    const typeAllowsNumber = ["SHORT", "LONG", "LINEAR"];
+
+    if (
+      (Array.isArray(options) &&
+        !optionsRequiredViewTypes.includes(viewType)) ||
+      (!Array.isArray(options) && optionsRequiredViewTypes.includes(viewType))
+    ) {
+      throw new NotAcceptableError(
+        `Options can only exist for view types: ${optionsRequiredViewTypes.join(
+          ", "
+        )}, and must exist for those view types.`
+      );
+    }
+
+    if (type === "number" && !typeAllowsNumber.includes(viewType)) {
+      throw new NotAcceptableError(
+        `Type 'number' is only allowed for view types: ${typeAllowsNumber.join(
+          ", "
+        )}.`
+      );
+    }
+  }
 };
