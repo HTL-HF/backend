@@ -56,8 +56,8 @@ export const addForm = async (
 
   for (const question of form.questions) {
     if (
-      question.options &&
-      !inArray(["DROPDOWN", "CHECKBOX", "RADIO", "LINEAR"], question.viewType)
+      inArray(["DROPDOWN", "CHECKBOX", "RADIO", "LINEAR"], question.viewType) &&
+      Array.isArray(question.options )
     ) {
       throw new NotAcceptableError(
         "Cant have options for non optional view type"
