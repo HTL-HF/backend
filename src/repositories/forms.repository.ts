@@ -9,7 +9,7 @@ export const deleteFormById = async (formId: string) => {
   return await Forms.findByIdAndDelete(formId);
 };
 
-export const createForm = async (form: RequestForm) => {
+export const createForm = async (form: RequestForm & { userId: string }) => {
   return await Forms.create({ ...form });
 };
 

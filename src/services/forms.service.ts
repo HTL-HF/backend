@@ -102,7 +102,10 @@ const validateForm = (form: RequestForm) => {
       );
     }
 
-    if (type === "number" && !typeAllowsNumber.includes(viewType)) {
+    if (
+      (type === "number" && !typeAllowsNumber.includes(viewType)) ||
+      (type === "string" && viewType === "LINEAR")
+    ) {
       throw new NotAcceptableError(
         `Type 'number' is only allowed for view types: ${typeAllowsNumber.join(
           ", "
