@@ -38,7 +38,7 @@ export const saveResponseHandler = async (
       
       createdResponseId = await saveResponse(
         request.body,
-        request.params.formId,
+        formId,
         tokenCookie.token
       );
       
