@@ -7,10 +7,9 @@ import {
   getFormById,
 } from "../repositories/forms.repository";
 import { RequestForm, ResponseForm } from "../types/dtos/forms.dto";
-import { getUserFromToken } from "../utils/jwt.utils";
+import { UserDTO } from "../types/dtos/users.dto";
 
-export const getUserForms = async (token: string) => {
-  const user = getUserFromToken(token);
+export const getUserForms = async (user: UserDTO) => {
   const forms = await findUserForms(user.id);
   if (!forms) {
     return [];
@@ -23,8 +22,7 @@ export const getUserForms = async (token: string) => {
   });
 };
 
-export const deleteForm = async (formId: string, token: string) => {
-  const user = await getUserFromToken(token);
+export const deleteForm = async (formId: string, user: UserDTO) => {
   const form = await getFormById(formId);
   if (form) {
     if (form.userId.toString() !== user.id) {
@@ -35,14 +33,13 @@ export const deleteForm = async (formId: string, token: string) => {
   }
 
   const deletedForm = await deleteFormById(formId);
-  if (deletedForm) return deletedForm;
+  return deletedForm;
 };
 
 export const addForm = async (
   form: RequestForm,
-  token: string
+  user: UserDTO
 ): Promise<ResponseForm> => {
-  const user = getUserFromToken(token);
 
   const createdForm = await createForm({ ...form, userId: user.id });
   
