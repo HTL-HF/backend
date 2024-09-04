@@ -9,6 +9,7 @@ import {
 } from "../repositories/responses.repository";
 import { ResponseQuestion } from "../types/dtos/forms.dto";
 import { AnswerDTO, ResponseDTO } from "../types/dtos/responses.dto";
+import { UserDTO } from "../types/dtos/users.dto";
 import { QuestionModel } from "../types/interfaces/forms.interface";
 import { inArray } from "../utils/array.utils";
 import { getUserFromToken, verifyToken } from "../utils/jwt.utils";
@@ -16,9 +17,9 @@ import { getFormById, isOwner } from "./forms.service";
 
 export const getFormResponsesById = async (
   formId: string,
-  token: string
+  user: UserDTO
 ): Promise<ResponseDTO[]> => {
-  const userId = getUserFromToken(token).id;
+  const userId = user.id;
 
   await isOwner(formId, userId);
 
@@ -72,10 +73,10 @@ export const getResponseById = async (responseId: string) => {
   return response.toObject();
 };
 
-export const removeResponse = async (responseId: string, token: string) => {
+export const removeResponse = async (responseId: string, user:UserDTO) => {
   const response = await getResponseById(responseId);
 
-  const userId = getUserFromToken(token).id;
+  const userId = user.id;
 
   await isOwner(response.formId.toString(), userId);
 

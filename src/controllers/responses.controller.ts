@@ -5,18 +5,17 @@ import {
   saveResponse,
 } from "../services/responses.service";
 import { StatusCodes } from "http-status-codes";
-import { verifyToken } from "../utils/jwt.utils";
+import { getUserFromToken, verifyToken } from "../utils/jwt.utils";
 
 export const getResponsesHandler = async (
   request: Request,
   response: Response,
   next: NextFunction
 ) => {
+  const user = getUserFromToken(request.cookies["token"].token);
+  
   try {
-    const responses = await getFormResponsesById(
-      request.params.formId,
-      request.cookies["token"].token
-    );
+    const responses = await getFormResponsesById(request.params.formId,user);
     response.status(StatusCodes.OK).json(responses);
   } catch (err) {
     next(err);
@@ -35,13 +34,12 @@ export const saveResponseHandler = async (
 
     if (tokenCookie) {
       verifyToken(tokenCookie.token);
-      
+
       createdResponseId = await saveResponse(
         request.body,
         formId,
         tokenCookie.token
       );
-      
     } else {
       createdResponseId = await saveResponse(request.body, formId);
     }
@@ -58,10 +56,9 @@ export const removeResponseHandler = async (
   next: NextFunction
 ) => {
   try {
-    const deletedResponse = await removeResponse(
-      request.params.id,
-      request.cookies["token"].token
-    );
+    const user = getUserFromToken(request.cookies["token"].token);
+
+    const deletedResponse = await removeResponse(request.params.id, user);
 
     response
       .status(StatusCodes.OK)
