@@ -10,23 +10,14 @@ import {
   removeResponseHandler,
   saveResponseHandler,
 } from "../controllers/responses.controller";
+import responsesRouter from "./responses.routes";
 
 const formsRouter = Router();
 
-formsRouter.post("/:formId/responses", saveResponseHandler);
 formsRouter.get("/:id", getFormByIdHandler);
 
 formsRouter.post("/", verifyTokenMiddleware, addFormHandler);
 formsRouter.delete("/:id", verifyTokenMiddleware, deleteFormHandler);
-formsRouter.get(
-  "/:formId/responses",
-  verifyTokenMiddleware,
-  getResponsesHandler
-);
-formsRouter.delete(
-  "/:formId/responses/:id",
-  verifyTokenMiddleware,
-  removeResponseHandler
-);
 
+formsRouter.use("/:formId/responses", responsesRouter);
 export default formsRouter;
