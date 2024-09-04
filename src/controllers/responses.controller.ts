@@ -62,7 +62,7 @@ export const removeResponseHandler = async (
   try {
     const user = getUserFromToken(request.cookies["token"].token);
 
-    await isOwner(request.params.id, user.id);
+    await isOwner(request.params.formId, user.id);
 
     const deletedResponse = await removeResponse(request.params.id, user);
 
