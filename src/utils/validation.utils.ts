@@ -3,38 +3,64 @@ import { getFormById } from "../services/forms.service";
 import { RequestForm, ResponseQuestion } from "../types/dtos/forms.dto";
 import { AnswerDTO, ResponseDTO } from "../types/dtos/responses.dto";
 
-export const validateForm = (form: RequestForm) => {
-  for (const question of form.questions) {
-    const { options, viewType, type } = question;
+const optionsRequiredViewTypes = ["DROPDOWN", "CHECKBOX", "RADIO", "LINEAR"];
+const typeAllowsNumber = ["SHORT", "LONG", "LINEAR"];
 
-    const optionsRequiredViewTypes = [
-      "DROPDOWN",
-      "CHECKBOX",
-      "RADIO",
-      "LINEAR",
-    ];
-    const typeAllowsNumber = ["SHORT", "LONG", "LINEAR"];
-
+const validateOptionsType = (options: any[] | undefined, viewType: string) => {
+  if (viewType === "LINEAR") {
     if (
-      (Array.isArray(options) &&
-        !optionsRequiredViewTypes.includes(viewType)) ||
-      (!Array.isArray(options) && optionsRequiredViewTypes.includes(viewType))
+      !Array.isArray(options) ||
+      !options.every((opt) => typeof opt === "number") ||
+      !options.every((opt, i, arr) => i === 0 || opt === arr[i - 1] + 1)
     ) {
       throw new NotAcceptableError(
-        `Options can only exist for view types: ${optionsRequiredViewTypes.join(
-          ", "
-        )}, and must exist for those view types.`
+        "LINEAR type options must be continuous numbers (e.g., 1, 2, 3, 4)."
       );
     }
-
-    if (type === "number" && !typeAllowsNumber.includes(viewType)) {
-      throw new NotAcceptableError(
-        `Type 'number' is only allowed for view types: ${typeAllowsNumber.join(
-          ", "
-        )}.`
-      );
+  } else {
+    if (
+      !Array.isArray(options) ||
+      !options.every((opt) => typeof opt === "string")
+    ) {
+      throw new NotAcceptableError(`${viewType} type options must be strings.`);
     }
   }
+};
+
+const validateOptionsPresence = (
+  options: any[] | undefined,
+  viewType: string
+) => {
+  if (
+    (Array.isArray(options) && !optionsRequiredViewTypes.includes(viewType)) ||
+    (!Array.isArray(options) && optionsRequiredViewTypes.includes(viewType))
+  ) {
+    throw new NotAcceptableError(
+      `Options can only exist for view types: ${optionsRequiredViewTypes.join(
+        ", "
+      )}, and must exist for those view types.`
+    );
+  }
+};
+
+const validateQuestionType = (type: string, viewType: string) => {
+  if (type === "number" && !typeAllowsNumber.includes(viewType)) {
+    throw new NotAcceptableError(
+      `Type 'number' is only allowed for view types: ${typeAllowsNumber.join(
+        ", "
+      )}.`
+    );
+  }
+};
+
+export const validateForm = (form: RequestForm) => {
+  form.questions.forEach(({ options, viewType, type }) => {
+    validateOptionsPresence(options, viewType);
+    validateQuestionType(type, viewType);
+    if (optionsRequiredViewTypes.includes(viewType)) {
+      validateOptionsType(options, viewType);
+    }
+  });
 };
 
 export const verifyResponseValidity = async (
