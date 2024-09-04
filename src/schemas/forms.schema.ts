@@ -1,30 +1,8 @@
 import mongoose, { Schema } from "mongoose";
+import { FormModel } from "../types/interfaces/forms.interface";
 
-interface IQuestion {
-  title: string;
-  description?: string;
-  required: boolean;
-  options?: (number | string)[];
-  type: "NUMBER" | "STRING";
-  viewType:
-    | "SHORT"
-    | "LONG"
-    | "CHECKBOX"
-    | "RADIO"
-    | "DROPDOWN"
-    | "LINEAR"
-    | "DATE"
-    | "TIME";
-}
 
-interface IForm {
-  title: string;
-  description?: string;
-  userId: mongoose.Types.ObjectId;
-  questions: IQuestion[];
-}
-
-const QuestionSchema = new Schema<IQuestion>({
+const QuestionsSchema = new Schema({
   title: { type: String, required: true },
   description: { type: String },
   required: { type: Boolean, required: true },
@@ -44,11 +22,11 @@ const QuestionSchema = new Schema<IQuestion>({
     required: true,
   },
   options: {
-    type: [Schema.Types.Mixed],
+    type: [Schema.Types.Mixed], required:false
   },
 });
 
-const FormSchema = new Schema<IForm>({
+const FormsSchema = new Schema({
   title: { type: String, required: true },
   description: { type: String },
   userId: {
@@ -56,7 +34,8 @@ const FormSchema = new Schema<IForm>({
     ref: "User",
     required: true,
   },
-  questions: [QuestionSchema],
+  questions: [QuestionsSchema],
 });
 
-export const Form = mongoose.model("Form", FormSchema);
+const Forms = mongoose.model<FormModel & Document>("Form", FormsSchema);
+export default Forms;
