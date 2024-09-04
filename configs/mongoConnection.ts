@@ -10,9 +10,10 @@ const configs = {
       : "",
 };
 
-const url = `mongodb://${configs.CREDENTIALS}${configs.IP}/${configs.DB_NAME}?retryWrites=true&w=majority`;
+const defaultUrl = `mongodb://${configs.CREDENTIALS}${configs.IP}/${configs.DB_NAME}?retryWrites=true&w=majority`;
 
-const connect = (connectedFunction: () => void) => {
+const connect = (connectedFunction: () => void, url = defaultUrl) => {
+  console.log(url)
   mongoose
     .connect(url, { autoCreate: true })
     .then(connectedFunction)
