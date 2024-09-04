@@ -17,6 +17,8 @@ export const getResponsesHandler = async (
   const user = getUserFromToken(request.cookies["token"].token);
 
   try {
+    await isOwner(request.params.formId, user.id);
+
     const responses = await getFormResponsesById(request.params.formId, user);
     response.status(StatusCodes.OK).json(responses);
   } catch (err) {
@@ -40,7 +42,7 @@ export const saveResponseHandler = async (
       verifyToken(tokenCookie.token);
 
       const user = getUserFromToken(tokenCookie.token);
-      
+
       createdResponseId = await saveResponse(request.body, formId, user);
     } else {
       createdResponseId = await saveResponse(request.body, formId);

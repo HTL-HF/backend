@@ -20,10 +20,6 @@ export const getFormResponsesById = async (
   formId: string,
   user: UserDTO
 ): Promise<ResponseDTO[]> => {
-  const userId = user.id;
-
-  await isOwner(formId, userId);
-
   const responses = (await findFormResponsesById(formId)).map((response) => {
     const responseObject = response.toObject();
 
@@ -56,7 +52,7 @@ export const saveResponse = async (
   if (user) {
     response = { ...response, userId: user.id };
   }
-  
+
   return (await createResponse({ ...response, formId })).toObject()._id;
 };
 
