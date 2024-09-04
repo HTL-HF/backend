@@ -6,6 +6,7 @@ import {
 } from "../services/responses.service";
 import { StatusCodes } from "http-status-codes";
 import { getUserFromToken, verifyToken } from "../utils/jwt.utils";
+import { verifyResponseValidity } from "../utils/validation.utils";
 
 export const getResponsesHandler = async (
   request: Request,
@@ -31,6 +32,9 @@ export const saveResponseHandler = async (
     const formId = request.params.formId;
     let createdResponseId;
     const tokenCookie = request.cookies["token"];
+
+    await verifyResponseValidity(request.body, formId);
+
 
     if (tokenCookie) {
       verifyToken(tokenCookie.token);

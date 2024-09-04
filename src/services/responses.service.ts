@@ -58,7 +58,6 @@ export const saveResponse = async (
 
     return await saveResponse({ ...response, userId }, formId);
   } else {
-    await verifyResponseValidity(response, formId);
 
     return (await createResponse({ ...response, formId })).toObject()._id;
   }
