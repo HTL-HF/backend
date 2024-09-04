@@ -13,6 +13,6 @@ export const createForm = async (form: RequestForm) => {
   return await Forms.create({ ...form });
 };
 
-export const getFormById = async (formId: string) => {
+export const findFormById = async (formId: string) => {
   return await Forms.findById(formId);
 };

@@ -1,11 +1,12 @@
 import mongoose from "mongoose";
 
 export interface QuestionModel {
+  _id:string
   title: string;
   description?: string;
   required: boolean;
   options?: (number | string)[];
-  type: "NUMBER" | "STRING";
+  type: "number" | "string";
   viewType:
     | "SHORT"
     | "LONG"

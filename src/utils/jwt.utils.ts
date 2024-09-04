@@ -1,6 +1,7 @@
 import { UserDTO } from "../types/dtos/users.dto";
 import { decode, sign, verify } from "jsonwebtoken";
 import { UserModel } from "../types/interfaces/users.interface";
+import UnauthorizedError from "../errors/UnauthorizedError";
 
 const SECRET_KEY: string = process.env.JWT_SECRET_KEY || "very secret key";
 
@@ -24,5 +25,9 @@ export const getUserFromToken = (token: string): UserDTO => {
 };
 
 export const verifyToken = (token: string) => {
-  verify(token, SECRET_KEY, { ignoreExpiration: false });
+  try {
+    verify(token, SECRET_KEY, { ignoreExpiration: false });
+  } catch (err) {
+    throw new UnauthorizedError("Invalid JWT token");
+  }
 };
