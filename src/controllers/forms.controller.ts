@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { addForm, deleteForm, getFormById } from "../services/forms.service";
 import { StatusCodes } from "http-status-codes";
+import { validateForm } from "../utils/validation.utils";
 
 export const deleteFormHandler = async (
   request: Request,
@@ -21,6 +22,8 @@ export const addFormHandler = async (
   next: NextFunction
 ) => {
   try {
+    validateForm(request.body);
+
     const form = await addForm(request.body, request.cookies["token"].token);
     response.status(StatusCodes.CREATED).json(form);
   } catch (err) {
