@@ -5,18 +5,21 @@ import {
   saveResponse,
 } from "../services/responses.service";
 import { StatusCodes } from "http-status-codes";
-import { verifyToken } from "../utils/jwt.utils";
+import { getUserFromToken, verifyToken } from "../utils/jwt.utils";
+import { verifyResponseValidity } from "../utils/validation.utils";
+import { isOwner } from "../services/forms.service";
 
 export const getResponsesHandler = async (
   request: Request,
   response: Response,
   next: NextFunction
 ) => {
+  const user = getUserFromToken(request.cookies["token"].token);
+
   try {
-    const responses = await getFormResponsesById(
-      request.params.formId,
-      request.cookies["token"].token
-    );
+    await isOwner(request.params.formId, user.id);
+
+    const responses = await getFormResponsesById(request.params.formId, user);
     response.status(StatusCodes.OK).json(responses);
   } catch (err) {
     next(err);
@@ -33,15 +36,14 @@ export const saveResponseHandler = async (
     let createdResponseId;
     const tokenCookie = request.cookies["token"];
 
+    await verifyResponseValidity(request.body, formId);
+
     if (tokenCookie) {
       verifyToken(tokenCookie.token);
-      
-      createdResponseId = await saveResponse(
-        request.body,
-        request.params.formId,
-        tokenCookie.token
-      );
-      
+
+      const user = getUserFromToken(tokenCookie.token);
+
+      createdResponseId = await saveResponse(request.body, formId, user);
     } else {
       createdResponseId = await saveResponse(request.body, formId);
     }
@@ -58,10 +60,11 @@ export const removeResponseHandler = async (
   next: NextFunction
 ) => {
   try {
-    const deletedResponse = await removeResponse(
-      request.params.id,
-      request.cookies["token"].token
-    );
+    const user = getUserFromToken(request.cookies["token"].token);
+
+    await isOwner(request.params.formId, user.id);
+
+    const deletedResponse = await removeResponse(request.params.id, user);
 
     response
       .status(StatusCodes.OK)

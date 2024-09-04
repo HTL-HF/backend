@@ -10,5 +10,5 @@ const usersRouter = Router();
 
 usersRouter.post("/register", registerHandler);
 usersRouter.post("/login", loginHandler);
-usersRouter.get("/forms", verifyTokenMiddleware).use(getUserFormsHandler);
+usersRouter.get("/forms", verifyTokenMiddleware,getUserFormsHandler)
 export default usersRouter;

@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import { addForm, deleteForm, getFormById } from "../services/forms.service";
 import { StatusCodes } from "http-status-codes";
+import { getUserFromToken } from "../utils/jwt.utils";
+import { validateForm } from "../utils/validation.utils";
 
 export const deleteFormHandler = async (
   request: Request,
@@ -8,7 +10,8 @@ export const deleteFormHandler = async (
   next: NextFunction
 ) => {
   try {
-    await deleteForm(request.params.id, request.cookies["token"].token);
+    const user = await getUserFromToken(request.cookies["token"].token);
+    await deleteForm(request.params.id, user);
     response.status(StatusCodes.OK).send("Successfully deleted form");
   } catch (err) {
     next(err);
@@ -21,7 +24,11 @@ export const addFormHandler = async (
   next: NextFunction
 ) => {
   try {
-    const form = await addForm(request.body, request.cookies["token"].token);
+    const user = await getUserFromToken(request.cookies["token"].token);
+    await validateForm(request.body);
+
+    const form = await addForm(request.body, user);
+
     response.status(StatusCodes.CREATED).json(form);
   } catch (err) {
     next(err);

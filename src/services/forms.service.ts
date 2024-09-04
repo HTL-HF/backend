@@ -8,10 +8,9 @@ import {
   findFormById,
 } from "../repositories/forms.repository";
 import { RequestForm, ResponseForm } from "../types/dtos/forms.dto";
-import { getUserFromToken } from "../utils/jwt.utils";
+import { UserDTO } from "../types/dtos/users.dto";
 
-export const getUserForms = async (token: string) => {
-  const user = getUserFromToken(token);
+export const getUserForms = async (user: UserDTO) => {
   const forms = await findUserForms(user.id);
   if (!forms) {
     return [];
@@ -32,8 +31,7 @@ export const isOwner = async (formId: string, userId: string) => {
   }
 };
 
-export const deleteForm = async (formId: string, token: string) => {
-  const user = await getUserFromToken(token);
+export const deleteForm = async (formId: string, user: UserDTO) => {
   const form = await getFormById(formId);
   if (form) {
     if (form.userId.toString() !== user.id) {
@@ -44,17 +42,13 @@ export const deleteForm = async (formId: string, token: string) => {
   }
 
   const deletedForm = await deleteFormById(formId);
-  if (deletedForm) return deletedForm;
+  return deletedForm;
 };
 
 export const addForm = async (
   form: RequestForm,
-  token: string
+  user: UserDTO
 ): Promise<ResponseForm> => {
-  const user = getUserFromToken(token);
-
-  validateForm(form);
-
   const createdForm = await createForm({ ...form, userId: user.id });
 
   return createdForm.toObject();
@@ -76,41 +70,4 @@ export const getFormById = async (formId: string) => {
       return { ...question, id: question._id.toString() };
     }),
   };
-};
-
-const validateForm = (form: RequestForm) => {
-  for (const question of form.questions) {
-    const { options, viewType, type } = question;
-
-    const optionsRequiredViewTypes = [
-      "DROPDOWN",
-      "CHECKBOX",
-      "RADIO",
-      "LINEAR",
-    ];
-    const typeAllowsNumber = ["SHORT", "LONG", "LINEAR"];
-
-    if (
-      (Array.isArray(options) &&
-        !optionsRequiredViewTypes.includes(viewType)) ||
-      (!Array.isArray(options) && optionsRequiredViewTypes.includes(viewType))
-    ) {
-      throw new NotAcceptableError(
-        `Options can only exist for view types: ${optionsRequiredViewTypes.join(
-          ", "
-        )}, and must exist for those view types.`
-      );
-    }
-
-    if (
-      (type === "number" && !typeAllowsNumber.includes(viewType)) ||
-      (type === "string" && viewType === "LINEAR")
-    ) {
-      throw new NotAcceptableError(
-        `Type 'number' is only allowed for view types: ${typeAllowsNumber.join(
-          ", "
-        )}.`
-      );
-    }
-  }
 };

@@ -3,6 +3,7 @@ import { CreateUserDto, UserLoginDTO } from "../types/dtos/users.dto";
 import { login, register } from "../services/user.service";
 import { StatusCodes } from "http-status-codes";
 import { getUserForms } from "../services/forms.service";
+import { getUserFromToken } from "../utils/jwt.utils";
 
 export const registerHandler = async (
   request: Request,
@@ -42,7 +43,9 @@ export const getUserFormsHandler = async (
   next: NextFunction
 ) => {
   try {
-    const forms = await getUserForms(request.cookies["token"].token);
+    const user = getUserFromToken(request.cookies["token"].token);
+
+    const forms = await getUserForms(user);
     
     response.status(StatusCodes.OK).json(forms);
   } catch (err) {
