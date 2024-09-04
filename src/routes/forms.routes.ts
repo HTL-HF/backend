@@ -16,13 +16,17 @@ const formsRouter = Router();
 formsRouter.post("/:formId/responses", saveResponseHandler);
 formsRouter.get("/:id", getFormByIdHandler);
 
-formsRouter.post("/", addFormHandler).use(verifyTokenMiddleware);
-formsRouter.delete("/:id", deleteFormHandler).use(verifyTokenMiddleware);
-formsRouter
-  .get("/:formId/responses", getResponsesHandler)
-  .use(verifyTokenMiddleware);
-formsRouter
-  .delete("/:formId/responses/:id", removeResponseHandler)
-  .use(verifyTokenMiddleware);
-  
+formsRouter.post("/", verifyTokenMiddleware, addFormHandler);
+formsRouter.delete("/:id", verifyTokenMiddleware, deleteFormHandler);
+formsRouter.get(
+  "/:formId/responses",
+  verifyTokenMiddleware,
+  getResponsesHandler
+);
+formsRouter.delete(
+  "/:formId/responses/:id",
+  verifyTokenMiddleware,
+  removeResponseHandler
+);
+
 export default formsRouter;
