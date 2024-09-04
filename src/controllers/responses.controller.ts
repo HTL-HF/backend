@@ -7,6 +7,7 @@ import {
 import { StatusCodes } from "http-status-codes";
 import { getUserFromToken, verifyToken } from "../utils/jwt.utils";
 import { verifyResponseValidity } from "../utils/validation.utils";
+import { isOwner } from "../services/forms.service";
 
 export const getResponsesHandler = async (
   request: Request,
@@ -14,9 +15,9 @@ export const getResponsesHandler = async (
   next: NextFunction
 ) => {
   const user = getUserFromToken(request.cookies["token"].token);
-  
+
   try {
-    const responses = await getFormResponsesById(request.params.formId,user);
+    const responses = await getFormResponsesById(request.params.formId, user);
     response.status(StatusCodes.OK).json(responses);
   } catch (err) {
     next(err);
@@ -35,15 +36,12 @@ export const saveResponseHandler = async (
 
     await verifyResponseValidity(request.body, formId);
 
-
     if (tokenCookie) {
       verifyToken(tokenCookie.token);
 
-      createdResponseId = await saveResponse(
-        request.body,
-        formId,
-        tokenCookie.token
-      );
+      const user = getUserFromToken(tokenCookie.token);
+      
+      createdResponseId = await saveResponse(request.body, formId, user);
     } else {
       createdResponseId = await saveResponse(request.body, formId);
     }
@@ -61,6 +59,8 @@ export const removeResponseHandler = async (
 ) => {
   try {
     const user = getUserFromToken(request.cookies["token"].token);
+
+    await isOwner(request.params.id, user.id);
 
     const deletedResponse = await removeResponse(request.params.id, user);
 

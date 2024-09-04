@@ -51,16 +51,13 @@ export const getFormResponsesById = async (
 export const saveResponse = async (
   response: Omit<ResponseDTO, "id" | "formId">,
   formId: string,
-  token?: string
+  user?: UserDTO
 ): Promise<string> => {
-  if (token) {
-    const userId = getUserFromToken(token).id;
-
-    return await saveResponse({ ...response, userId }, formId);
-  } else {
-
-    return (await createResponse({ ...response, formId })).toObject()._id;
+  if (user) {
+    response = { ...response, userId: user.id };
   }
+  
+  return (await createResponse({ ...response, formId })).toObject()._id;
 };
 
 export const getResponseById = async (responseId: string) => {
@@ -73,15 +70,10 @@ export const getResponseById = async (responseId: string) => {
   return response.toObject();
 };
 
-export const removeResponse = async (responseId: string, user:UserDTO) => {
+export const removeResponse = async (responseId: string, user: UserDTO) => {
   const response = await getResponseById(responseId);
-
-  const userId = user.id;
-
-  await isOwner(response.formId.toString(), userId);
 
   await deleteResponse(responseId);
 
   return response;
 };
-
