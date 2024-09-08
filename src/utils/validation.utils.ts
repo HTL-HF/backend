@@ -54,6 +54,10 @@ const validateQuestionType = (type: string, viewType: string) => {
 };
 
 export const validateForm = (form: RequestForm) => {
+  if (form.questions.length < 1) {
+    throw new NotAcceptableError("Form has to have at least one question");
+  }
+
   form.questions.forEach(({ options, viewType, type }) => {
     validateOptionsPresence(options, viewType);
     validateQuestionType(type, viewType);
@@ -75,7 +79,7 @@ export const verifyResponseValidity = async (
     );
 
     if (!answer) {
-      if (question.required)
+      if (question.required)  
         throw new NotAcceptableError(
           `question ${question.id} is required but was not answered`
         );
