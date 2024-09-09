@@ -5,8 +5,8 @@ const configs = {
   PORT: process.env.DB_PORT || "27017",
   DB_NAME: process.env.DB_NAME || "forms",
   CREDENTIALS:
-    process.env.USERNAME && process.env.PASSWORD
-      ? `${process.env.USERNAME}:${process.env.PASSWORD}@`
+    process.env.DB_USERNAME && process.env.DB_PASSWORD
+      ? `${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@`
       : "",
 };
 

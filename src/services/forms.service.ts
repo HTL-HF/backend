@@ -48,7 +48,7 @@ export const deleteForm = async (formId: string, user: UserDTO) => {
 export const addForm = async (
   form: RequestForm,
   user: UserDTO
-): Promise<ResponseForm> => {
+) => {
   const createdForm = await createForm({ ...form, userId: user.id });
 
   return createdForm.toObject();
