@@ -22,9 +22,13 @@ ENV FRONTEND_IP=$FRONTEND_IP_ARG
 ENV FRONTEND_PORT=$FRONTEND_PORT_ARG
 ENV JWT_SECRET_KEY=$JWT_SECRET_KEY_ARG
 
-WORKDIR /app
+WORKDIR /
 
-COPY . .
+COPY src src
+COPY package.json package.json
+COPY package-lock.json package-lock.json
+COPY configs configs
+COPY tsconfig.json tsconfig.json
 
 RUN npm clean-install
 RUN npm run build
