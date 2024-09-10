@@ -20,11 +20,10 @@ const FRONTEND_URL = `http://${process.env.FRONTEND_IP || "localhost"}:${
 app.use(
   cors({
     origin: (origin, callback) => {
-      const allowedOrigin = process.env.FRONTEND_IP;
-      if (!allowedOrigin) {
+      if (!process.env.FRONTEND_IP) {
         callback(null, origin);
       } else {
-        if (origin === allowedOrigin) {
+        if (origin === FRONTEND_URL) {
           callback(null, FRONTEND_URL);
         } else {
           callback(new Error("Not allowed by CORS"));
