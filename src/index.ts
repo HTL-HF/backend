@@ -11,7 +11,7 @@ import verifyTokenMiddleware from "./middlewares/verifyTokenMiddleware";
 import formsRouter from "./routes/forms.routes";
 
 const app = express();
-
+console.log(process.env);
 const PORT = process.env.PORT || 3000;
 const FRONTEND_URL = `http://${process.env.FRONTEND_IP || "localhost"}:${
   process.env.FRONTEND_PORT || 5173
@@ -26,7 +26,7 @@ app.use(
         if (origin === FRONTEND_URL) {
           callback(null, FRONTEND_URL);
         } else {
-          callback(new Error("Not allowed by CORS"));
+          callback(null, "");
         }
       }
     },
